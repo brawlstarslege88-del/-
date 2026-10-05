@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Расписание — 8Б класс</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:#f4f6f8;
+  color:#18202a;
+}
+header{
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  padding:28px 20px 22px;
+  position:sticky;top:0;z-index:10;
+}
+.wrap{max-width:1050px;margin:auto}
+h1{margin:0;font-size:30px}
+.sub{margin-top:6px;color:#6b7280}
+.days{
+  display:flex;gap:8px;overflow-x:auto;
+  margin-top:20px;padding-bottom:2px;
+}
+.day-btn{
+  border:0;background:#f0f2f5;color:#4b5563;
+  padding:11px 18px;border-radius:10px;
+  font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;
+}
+.day-btn.active{background:#20252b;color:#fff}
+main{padding:28px 20px 50px}
+.day-title{font-size:24px;margin:0 0 16px}
+.schedule{display:grid;gap:10px}
+.lesson{
+  background:#fff;border:1px solid #e7e9ed;border-radius:14px;
+  min-height:76px;padding:15px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 2px 7px rgba(0,0,0,.03);
+}
+.num{
+  width:38px;height:38px;border-radius:10px;background:#f1f3f5;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#59616b;margin-right:15px;flex:none;
+}
+.left{display:flex;align-items:center;min-width:0}
+.subject{font-size:17px;font-weight:700}
+.room{
+  background:#eef0f2;border-radius:9px;padding:8px 12px;
+  font-weight:800;white-space:nowrap;margin-left:14px;
+}
+.room span{font-size:12px;color:#777;font-weight:600;margin-right:5px}
+.empty{color:#9ca3af;font-weight:600}
+footer{color:#8a919b;text-align:center;padding:0 20px 30px;font-size:13px}
+@media(max-width:600px){
+  h1{font-size:25px}
+  .lesson{padding:13px}
+  .subject{font-size:15px}
+  .room{padding:7px 9px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Расписание 8Б класса</h1>
+    <div class="sub">Школьное расписание · кабинеты указаны у каждого урока</div>
+    <div class="days" id="days"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2 class="day-title" id="dayTitle"></h2>
+  <div class="schedule" id="schedule"></div>
+</main>
+
+<footer>8Б класс · расписание по предоставленной таблице</footer>
+
+<script>
+const data = {
+  "Понедельник":[
+    ["Английский язык","2"],["Разг. о важном","28"],["Русский язык","22"],
+    ["Химия","23"],["Алгебра","26"],["Физика","28"],["ТВиС","26"]
+  ],
+  "Вторник":[
+    ["Алгебра","11"],["Русский язык","22"],["Литература","22"],
+    ["История","10"],["Английский язык","2"],["География","28"],["Биология","23"]
+  ],
+  "Среда":[
+    ["Физкультура","—"],["Алгебра","22"],["Геометрия","22"],
+    ["Химия","23"],["Физика","28"],["Якутский язык","22"],["ОБЗР","22"]
+  ],
+  "Четверг":[
+    ["Физкультура","—"],["Информатика","11"],["Химия","23"],
+    ["Английский язык","2"],["Биология","23"],["История","10"],["История","10"]
+  ],
+  "Пятница":[
+    ["География","23"],["Русский язык","22"],["Литература","22"],
+    ["Геометрия","10"],["Труд","17"],["Музыка","28"]
+  ]
+};
+
+const days = Object.keys(data);
+const daysEl = document.getElementById("days");
+const titleEl = document.getElementById("dayTitle");
+const scheduleEl = document.getElementById("schedule");
+
+days.forEach((day,i)=>{
+  const b=document.createElement("button");
+  b.className="day-btn"+(i===0?" active":"");
+  b.textContent=day;
+  b.onclick=()=>showDay(day,b);
+  daysEl.appendChild(b);
+});
+
+function showDay(day,btn){
+  document.querySelectorAll(".day-btn").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  titleEl.textContent=day;
+  scheduleEl.innerHTML="";
+  data[day].forEach((lesson,i)=>{
+    const [subject,room]=lesson;
+    const el=document.createElement("div");
+    el.className="lesson";
+    el.innerHTML=`
+      <div class="left">
+        <div class="num">${i}</div>
+        <div class="subject">${subject}</div>
+      </div>
+      <div class="room">${room==="—" ? '<span>Кабинет</span>—' : '<span>Кабинет</span>'+room}</div>
+    `;
+    scheduleEl.appendChild(el);
+  });
+}
+showDay(days[0],document.querySelector(".day-btn"));
+</script>
+</body>
+</html>
